@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
             font-family: Arial, sans-serif;
             margin: 10px;
         }
+
         #treeContainer {
             margin-top: 20px;
             border: 1px solid #ccc;
@@ -18,20 +20,24 @@
             height: 200px;
             overflow-y: auto;
         }
+
         #fileViewer {
             margin-top: 20px;
             width: 100%;
             height: 150px;
         }
+
         ul {
             list-style-type: none;
             padding-left: 20px;
             margin: 0;
         }
+
         .hidden {
             display: none;
 
         }
+
         li {
             display: flex;
             flex-direction: column;
@@ -39,13 +45,16 @@
             cursor: pointer;
             margin: 5px 0;
         }
+
         .icon {
             margin-right: 5px;
         }
+
         .label-container {
             display: flex;
             align-items: center;
         }
+
         .children {
             margin-left: 20px;
             border-left: 1px solid #ccc;
@@ -60,7 +69,7 @@
             const apiUrl = repoUrl.replace('https://github.com/', 'https://api.github.com/repos/');
             const treeContainer = document.getElementById('treeContainer');
             const fileViewer = document.getElementById('fileViewer');
-            
+
             treeContainer.innerHTML = 'Loading...';
             fileViewer.value = '';
 
@@ -152,7 +161,7 @@
             const reviewOutput = document.getElementById('review-output');
 
             // Clear review output when fetching new file content
-            reviewOutput.innerHTML = ''; 
+            reviewOutput.innerHTML = '';
             // make apply button hidden
             const applyButton = document.getElementById('apply-button');
             if (applyButton) {
@@ -176,18 +185,21 @@
         window.onload = fetchRepoTree;       
     </script>
 </head>
+
 <body>
-    <h1>GitHub Repository Viewer</h1>
+    <h1>ブラタルなギットハブコードレビュー
+    </h1>
     <input type="text" id="repoUrl" placeholder="Enter GitHub Repo URL" value="https://github.com/tailuge/scoreboard">
     <button onclick="fetchRepoTree()">Connect</button>
-   <div id="treeContainer"></div>
-        <textarea id="fileViewer" readonly></textarea>
-        <div id="button-container">
+    <div id="treeContainer"></div>
+    <textarea id="fileViewer" readonly></textarea>
+    <div id="button-container">
         <button type="button" id="review-button">Review</button>
-         <button type="button" id="apply-button" class="hidden">Apply</button>
-        </div>
-        <a href="https://g.co/ai/idxGetGeminiKey" target="_blank">Get Token</a>
-        <div id="review-output"></div>
+        <button type="button" id="apply-button" class="hidden">Apply</button>
+    </div>
+    <a href="https://g.co/ai/idxGetGeminiKey" target="_blank">Get Token</a>
+    <div id="review-output"></div>
     <script type="module" src="/main.js"></script>
 </body>
+
 </html>
