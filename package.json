@@ -3,8 +3,8 @@
     "version": "0.0.1",
     "type": "module",
     "scripts": {
-      "dev": "vite",
-      "build": "vite build --outDir docs",
+      "dev": "vite src",
+      "build": "vite build  src",
       "preview": "vite preview"
     },
     "dependencies": {

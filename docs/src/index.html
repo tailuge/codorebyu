@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/codorebyu/assets/cr-9dc64c75.svg" type="image/svg+xml">
+    <title>GitHub Repo Viewer</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+        }
+
+        #treeContainer {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 300px;
+            height: 200px;
+            overflow-y: auto;
+        }
+
+        #fileViewer {
+            margin-top: 20px;
+            width: 100%;
+            height: 150px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .hidden {
+            display: none;
+
+        }
+
+        li {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+
+        .icon {
+            margin-right: 5px;
+        }
+
+        .label-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .children {
+            margin-left: 20px;
+            border-left: 1px solid #ccc;
+            padding-left: 10px;
+        }
+    </style>
+    <script>
+        const DEFAULT_REPO = 'https://github.com/tailuge/codorebyu';
+
+        async function fetchRepoTree() {
+            const repoUrl = document.getElementById('repoUrl').value || DEFAULT_REPO;
+            const apiUrl = repoUrl.replace('https://github.com/', 'https://api.github.com/repos/');
+            const treeContainer = document.getElementById('treeContainer');
+            const fileViewer = document.getElementById('fileViewer');
+
+            treeContainer.innerHTML = 'Loading...';
+            fileViewer.value = '';
+
+            try {
+                const repoResponse = await fetch(`${apiUrl}/git/trees/main?recursive=1`);
+                if (!repoResponse.ok) throw new Error('Failed to fetch repository data');
+
+                const repoData = await repoResponse.json();
+                const tree = buildTree(repoData.tree);
+                treeContainer.innerHTML = '';
+                renderTree(tree, treeContainer, apiUrl);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Unable to fetch repository. Please check the URL.');
+            }
+        }
+
+        function buildTree(files) {
+            const tree = {};
+
+            files.forEach(file => {
+                const parts = file.path.split('/');
+                let currentLevel = tree;
+
+                parts.forEach((part, index) => {
+                    if (!currentLevel[part]) {
+                        currentLevel[part] = index === parts.length - 1 ? file : { _isDir: true };
+                    }
+                    currentLevel = currentLevel[part];
+                });
+            });
+
+            return tree;
+        }
+
+        function renderTree(tree, container, apiUrl) {
+            const ul = document.createElement('ul');
+
+            for (const key in tree) {
+                if (key === '_isDir') continue; // Skip internal marker
+
+                // Skip if tree[key]?.path is undefined (metadata like mode, type, sha, etc.)
+                if (!tree[key]?.path) continue;
+
+                const li = document.createElement('li');
+
+                // Container for the label (icon + text)
+                const labelContainer = document.createElement('div');
+                labelContainer.className = 'label-container';
+
+                const icon = document.createElement('span');
+                icon.className = 'icon';
+                icon.textContent = tree[key].type === 'blob' ? '📄' : '📁';
+
+                const label = document.createElement('span');
+                label.textContent = key;
+
+                labelContainer.appendChild(icon);
+                labelContainer.appendChild(label);
+
+                li.appendChild(labelContainer);
+
+                if (tree[key].type === 'blob') {
+                    label.addEventListener('click', () => fetchFileContent(apiUrl, tree[key].path));
+                } else {
+                    label.addEventListener('click', function (event) {
+                        event.stopPropagation();
+                        if (li.children.length > 1) {
+                            // Remove the children container if it exists
+                            li.removeChild(li.lastChild);
+                        } else {
+                            // Create a container for children and render the subtree
+                            const childrenContainer = document.createElement('div');
+                            childrenContainer.className = 'children';
+                            renderTree(tree[key], childrenContainer, apiUrl);
+                            li.appendChild(childrenContainer);
+                        }
+                    });
+                }
+
+                ul.appendChild(li);
+            }
+
+            container.appendChild(ul);
+        }
+
+        async function fetchFileContent(apiUrl, filePath) {
+            const fileViewer = document.getElementById('fileViewer');
+            const reviewOutput = document.getElementById('review-output');
+
+            // Clear review output when fetching new file content
+            reviewOutput.innerHTML = '';
+            // make apply button hidden
+            const applyButton = document.getElementById('apply-button');
+            if (applyButton) {
+                applyButton.classList.add('hidden');
+            }
+
+            try {
+                const fileResponse = await fetch(`${apiUrl}/contents/${filePath}`);
+                if (!fileResponse.ok) throw new Error('Failed to fetch file content');
+
+                const fileData = await fileResponse.json();
+                const content = atob(fileData.content);
+                fileViewer.value = content;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Unable to fetch file content.');
+            }
+        }
+
+        // Load default repo on page load
+        window.onload = fetchRepoTree;       
+    </script>
+  <script type="module" crossorigin src="/codorebyu/assets/main-8ada0b39.js"></script>
+  <link rel="stylesheet" href="/codorebyu/assets/index-0a14ca94.css">
+</head>
+
+<body>
+    <h1>ブラタルなギットハブコードレビュー
+        <a href="https://idx.google.com/import?url=https%3A%2F%2Fgithub.com%2Ftailuge%2Fcodorebyu">
+            <img height="32" alt="Open in IDX" src="https://www.gstatic.com/monospace/230530/icon-192.png">
+        </a>
+    </h1>
+    <input type="text" id="repoUrl" placeholder="Enter GitHub Repo URL" value="https://github.com/tailuge/scoreboard">
+    <button onclick="fetchRepoTree()">Connect</button>
+    <div id="treeContainer"></div>
+    <textarea id="fileViewer" readonly></textarea>
+    <div id="button-container">
+        <button type="button" id="review-button">Review</button>
+        <button type="button" id="apply-button" class="hidden">Apply</button>
+    </div>
+    <footer>
+        <div class="footer-links">
+            <a href="https://icons8.com/" target="_blank" rel="noopener noreferrer" class="footer-link">Icons8</a>
+            <a href="https://github.com/tailuge/codorebyu" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+            <a href="https://idx.google.com/codorebyu-3227537" target="_blank" rel="noopener noreferrer" class="footer-link">IDX</a>
+        </div>
+        <style>
+            .footer-links {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                margin-top: 20px;
+                font-size: 12px;
+            }
+            .footer-link {
+                text-decoration: none;
+            }
+        </style>
+    <a href="https://g.co/ai/idxGetGeminiKey" target="_blank">Get Token</a>
+    <div id="review-output"></div>
+    
+</body>
+
+</html>
