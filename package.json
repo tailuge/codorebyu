@@ -5,7 +5,7 @@
     "scripts": {
       "dev": "vite src",
       "build": "vite build  src",
-      "preview": "vite preview"
+      "preview": "vite preview src"
     },
     "dependencies": {
       "@google/generative-ai": "^0.12.0",
