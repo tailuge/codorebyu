@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/codorebyu/assets/cr-9dc64c75.svg" type="image/svg+xml">
     <title>GitHub Repo Viewer</title>
     
     <style>
@@ -10,6 +12,7 @@
             font-family: Arial, sans-serif;
             margin: 10px;
         }
+
         #treeContainer {
             margin-top: 20px;
             border: 1px solid #ccc;
@@ -18,20 +21,24 @@
             height: 200px;
             overflow-y: auto;
         }
+
         #fileViewer {
             margin-top: 20px;
             width: 100%;
             height: 150px;
         }
+
         ul {
             list-style-type: none;
             padding-left: 20px;
             margin: 0;
         }
+
         .hidden {
             display: none;
 
         }
+
         li {
             display: flex;
             flex-direction: column;
@@ -39,13 +46,16 @@
             cursor: pointer;
             margin: 5px 0;
         }
+
         .icon {
             margin-right: 5px;
         }
+
         .label-container {
             display: flex;
             align-items: center;
         }
+
         .children {
             margin-left: 20px;
             border-left: 1px solid #ccc;
@@ -60,7 +70,7 @@
             const apiUrl = repoUrl.replace('https://github.com/', 'https://api.github.com/repos/');
             const treeContainer = document.getElementById('treeContainer');
             const fileViewer = document.getElementById('fileViewer');
-            
+
             treeContainer.innerHTML = 'Loading...';
             fileViewer.value = '';
 
@@ -152,7 +162,7 @@
             const reviewOutput = document.getElementById('review-output');
 
             // Clear review output when fetching new file content
-            reviewOutput.innerHTML = ''; 
+            reviewOutput.innerHTML = '';
             // make apply button hidden
             const applyButton = document.getElementById('apply-button');
             if (applyButton) {
@@ -175,21 +185,27 @@
         // Load default repo on page load
         window.onload = fetchRepoTree;       
     </script>
-  <script type="module" crossorigin src="/codorebyu/assets/index-d7a62726.js"></script>
-  <link rel="stylesheet" href="/codorebyu/assets/index-3d1df1bb.css">
+  <script type="module" crossorigin src="/codorebyu/assets/index-8ada0b39.js"></script>
+  <link rel="stylesheet" href="/codorebyu/assets/index-0a14ca94.css">
 </head>
+
 <body>
-    <h1>GitHub Repository Viewer</h1>
+    <h1>ブラタルなギットハブコードレビュー
+        <a href="https://idx.google.com/import?url=https%3A%2F%2Fgithub.com%2Ftailuge%2Fcodorebyu">
+            <img height="32" alt="Open in IDX" src="https://www.gstatic.com/monospace/230530/icon-192.png">
+        </a>
+    </h1>
     <input type="text" id="repoUrl" placeholder="Enter GitHub Repo URL" value="https://github.com/tailuge/scoreboard">
     <button onclick="fetchRepoTree()">Connect</button>
-   <div id="treeContainer"></div>
-        <textarea id="fileViewer" readonly></textarea>
-        <div id="button-container">
+    <div id="treeContainer"></div>
+    <textarea id="fileViewer" readonly></textarea>
+    <div id="button-container">
         <button type="button" id="review-button">Review</button>
-         <button type="button" id="apply-button" class="hidden">Apply</button>
-        </div>
-        <a href="https://g.co/ai/idxGetGeminiKey" target="_blank">Get Token</a>
-        <div id="review-output"></div>
+        <button type="button" id="apply-button" class="hidden">Apply</button>
+    </div>
+    <a href="https://g.co/ai/idxGetGeminiKey" target="_blank">Get Token</a>
+    <div id="review-output"></div>
     
 </body>
+
 </html>
