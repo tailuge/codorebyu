@@ -5,7 +5,9 @@
     "scripts": {
       "dev": "vite src",
       "build": "vite build  src",
-      "preview": "vite preview src"
+      "preview": "vite preview src",
+      "prettify": "prettier --cache true --write --trailing-comma es5 --no-semi {src,test}/**/*.[jt]s",
+      "deps": "npx yarn-check --skip-unused"
     },
     "dependencies": {
       "@google/generative-ai": "^0.12.0",
@@ -13,7 +15,8 @@
       "markdown-it": "^13.0.2"
     },
     "devDependencies": {
-      "vite": "^4.4.5"
+      "vite": "^4.4.5",
+      "prettier": "3.4.2"
     }
   }
   
