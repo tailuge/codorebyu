@@ -6,33 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="./favicon.png" type="image/png">
     <link rel="stylesheet" href="./style.css">
-    <title>GitHub Repo Viewer</title>   
+    <title>GitHub Repo Viewer</title>
 </head>
-    
+
 <body>
     <input type="password" id="apiKey" placeholder="Google AI Studio API key" value="">
     <button onclick="window.open('https://aistudio.google.com/apikey','_blank')">Get Key</button>
     <input type="text" id="repoUrl" placeholder="Enter GitHub Repo URL" value="https://github.com/tailuge/scoreboard">
     <button onclick="fetchRepoTree()">Connect</button>
-    <div id="treeContainer"></div>
-    <textarea id="fileViewer" readonly></textarea>
+    <div id="main-container">
+        <div id="treeContainer"></div>
+        <textarea id="fileViewer" readonly></textarea>
+    </div>
     <div id="button-container">
-        <button type="button" id="review-button" >Review</button>
-        <button type="button" id="apply-button" >Apply</button>
-    </div> 
+        <button type="button" id="review-button">Review</button>
+        <button type="button" id="apply-button">Apply</button>
+    </div>
     <footer>
         <div class="footer-links">
             <a href="https://icons8.com/" target="_blank" rel="noopener noreferrer" class="footer-link">Icons8</a>
-            <a href="https://github.com/tailuge/codorebyu" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+            <a href="https://github.com/tailuge/codorebyu" target="_blank" rel="noopener noreferrer"
+                class="footer-link">GitHub</a>
             <a href="https://idx.google.com/" target="_blank" rel="noopener noreferrer" class="footer-link">IDX</a>
         </div>
-       
-    <a href="https://g.co/ai/idxGetGeminiKey" target="_blank">Get Token</a> 
+
+        <a href="https://g.co/ai/idxGetGeminiKey" target="_blank">Get Token</a>
         <div id="review-output"></div>
         <script type="module" src="./repo.js"></script>
-        <script type="module" src="./main.js"></script>
-        </footer> 
-</body> 
-</html> 
+        <script type="module" src="./review.js"></script>
+    </footer>
+    <style>
+        #main-container {
+            display: flex;
+        }
 
+        #treeContainer {
+            width: 20%;
+        }
 
+        #fileViewer {
+            width: 80%;
+        }
+    </style>
+</body>
+
+</html>
