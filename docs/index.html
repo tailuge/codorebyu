@@ -5,36 +5,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAABg0lEQVR4nO3WP0hVYRgG8F8iDQaCUEvaIAQtSRbplEKDhI1GObUlLQZdGhp00M3GgqCGpoaywU0o/LM2qFBCxzGsLUUTotBA5cIb3Oxwl3u/7nIeeODwPpzzPJz3/fheChT4Gz2YxFQiToZHLrrwG0uYS8Sl8DifF+AePuMSbqIfg7iOPvVD2WM0TyghwxXcCfNbGI7neiELr9wAO3iTmDvVAmzjeWJuVwuQSY+qLciKAIoWpEcxhNn/Pob96G1UC5rwBauNCnANB8GLjQjwGu+xjCdRexHXfbIAx9AWS8cvjMS3N3Gy2oulGgI041NctQcV/I5WnMZeRX0rFpN39QpQxjj245cPxGLTUaF34iqGsBJBHuWtZLXgBn7E4nEiR2/Bq2jN7aNirUvpDM6gG+uYzQmwgK+4nGotL8UQTgePYhFPJUYTvuEuzuItXuIUxrCWOkB3DNgz/MQHfMQGHofWnjLAgzApD9oEjscxfYjd0P4ZwHqibDSPcznahRjy+38qh3QUv27pzSB3AAAAAElFTkSuQmCC" type="image/png">
-    
-    <title>GitHub Repo Viewer</title>   
-  <script type="module" crossorigin src="/codorebyu/assets/index-434a90e3.js"></script>
-  <link rel="stylesheet" href="/codorebyu/assets/index-a517c404.css">
+     
+    <title>GitHub Repo Viewer</title>
+  <script type="module" crossorigin src="/codorebyu/assets/index-c369ea1b.js"></script>
+  <link rel="stylesheet" href="/codorebyu/assets/index-185183b5.css">
 </head>
-    
+
 <body>
-    <input type="password" id="apiKey" placeholder="Google AI Studio API key" value="">
-    <button onclick="window.open('https://aistudio.google.com/apikey','_blank')">Get Key</button>
-    <input type="text" id="repoUrl" placeholder="Enter GitHub Repo URL" value="https://github.com/tailuge/scoreboard">
-    <button onclick="fetchRepoTree()">Connect</button>
-    <div id="treeContainer"></div>
-    <textarea id="fileViewer" readonly></textarea>
+    <div id="input-container">
+        <div class="input-group">
+            <input type="password" id="apiKey" placeholder="Google AI Studio API key" value="">
+            <button onclick="window.open('https://aistudio.google.com/apikey','_blank')">Get Key</button>
+        </div>
+        <div class="input-group">
+            <input type="text" id="repoUrl" placeholder="Enter GitHub Repo URL"
+                value="https://github.com/tailuge/scoreboard">
+            <button onclick="fetchRepoTree()">Connect</button>
+        </div>
+    </div>
+    <div id="main-container">
+        <div id="treeContainer"></div>
+        <textarea id="fileViewer" readonly></textarea>
+    </div>
     <div id="button-container">
-        <button type="button" id="review-button" >Review</button>
-        <button type="button" id="apply-button" >Apply</button>
-    </div> 
+        <button type="button" id="review-button">Review</button>
+        <button type="button" id="apply-button" style="display:none">Apply</button>
+    </div>
+
+    <div id="review-output">
+    </div>
+
+    
+    
     <footer>
         <div class="footer-links">
             <a href="https://icons8.com/" target="_blank" rel="noopener noreferrer" class="footer-link">Icons8</a>
-            <a href="https://github.com/tailuge/codorebyu" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+            <a href="https://github.com/tailuge/codorebyu" target="_blank" rel="noopener noreferrer"
+                class="footer-link">GitHub</a>
             <a href="https://idx.google.com/" target="_blank" rel="noopener noreferrer" class="footer-link">IDX</a>
         </div>
-       
-    <a href="https://g.co/ai/idxGetGeminiKey" target="_blank">Get Token</a> 
-        <div id="review-output"></div>
-        
-        
-        </footer> 
-</body> 
-</html> 
+    </footer>
+</body>
 
-
+</html>
