@@ -91,8 +91,10 @@ body {
 }
 
 #treeContainer .children {
-  margin-left: 20px; /* Indentation for nested items */
-  border-left: 1px solid #444; /* Visual indicator for nested structure */
+  margin-left: 20px;
+  /* Indentation for nested items */
+  border-left: 1px solid #444;
+  /* Visual indicator for nested structure */
   padding-left: 10px;
 }
 
@@ -102,7 +104,8 @@ body {
   border: none;
   color: #d4d4d4;
   font-family: 'Consolas', 'Courier New', monospace;
-  font-size: 12px; /* Smaller font size */
+  font-size: 12px;
+  /* Smaller font size */
   padding: 10px;
   resize: none;
   outline: none;
@@ -165,4 +168,10 @@ footer {
 .footer-link:hover {
   color: #0e639c;
   text-decoration: underline;
+}
+
+.hidden {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
 }
