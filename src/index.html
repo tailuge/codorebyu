@@ -5,36 +5,228 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="./favicon.png" type="image/png">
-    <link rel="stylesheet" href="./style.css"> 
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .app-header {
+            display: flex;
+            align-items: center;
+            padding: 6px 16px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .favicon-icon {
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        .title-container {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .chinese-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .pinyin {
+            font-size: 0.7rem;
+            color: #7f8c8d;
+            letter-spacing: 0.5px;
+        }
+
+        /* Input Container */
+        #input-container {
+            display: flex;
+            justify-content: center;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        /* Form Elements */
+        input, select, button {
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        input, select {
+            border: 1px solid #ced4da;
+            background-color: #ffffff;
+            color: #495057;
+        }
+
+        button {
+            border: none;
+            background-color: #0e639c;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1177bb;
+        }
+
+        /* Main Container */
+        #main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Tree Container */
+        #treeContainer {
+            width: 20%;
+            background-color: #ffffff;
+            border-right: 1px solid #dee2e6;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        /* File Viewer */
+        #fileViewer {
+            flex: 1;
+            background-color: #ffffff;
+            border: none;
+            color: #333333;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            padding: 16px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            border-left: 1px solid #dee2e6;
+        }
+
+        /* Button Container */
+        #button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        /* Review Output */
+        #review-output {
+            flex: 1;
+            background-color: #ffffff;
+            padding: 16px;
+            overflow-y: auto;
+            border-top: 1px solid #dee2e6;
+            color: #2c3e50;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .footer-link {
+            color: #7f8c8d;
+            text-decoration: none;
+            font-size: 11px;
+        }
+
+        .footer-link:hover {
+            color: #0e639c;
+            text-decoration: underline;
+        }
+
+        .hidden {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
     <title>GitHub Repo Viewer</title>
 </head>
 
 <body>
-    <div id="input-container">
-        <div class="input-group">
-            <input type="password" id="apiKey" placeholder="Google AI Studio API key" value="">
-            <button onclick="window.open('https://aistudio.google.com/apikey','_blank')">Get Key</button>
+    <div class="app-header">
+        <img src="./favicon.png" alt="Code Review" class="favicon-icon">
+        <div class="title-container">
+            <span class="chinese-title">代碼審查</span>
+            <span class="pinyin">Dàimǎ Shěnchá</span>
         </div>
+    </div>
+    
+    <div id="input-container">
         <div class="input-group">
             <input type="text" id="repoUrl" placeholder="Enter GitHub Repo URL"
                 value="https://github.com/tailuge/codorebyu">
-            <button onclick="fetchRepoTree()">Connect</button>
+            <button onclick="fetchRepoTree()">Load Repo</button>
         </div>
     </div>
+
     <div id="main-container">
         <div id="treeContainer"></div>
         <textarea id="fileViewer" readonly></textarea>
     </div>
+
     <div id="button-container">
-        <button type="button" id="review-button">Review</button>
-        <button type="button" id="apply-button">Apply</button>
+        <div class="input-group">
+            <select id="llmProvider">
+                <option value="google">Google</option>
+                <option value="github">GitHub</option>
+            </select>
+            <input type="password" id="apiKey" placeholder="API Key">
+            <button onclick="window.open('https://aistudio.google.com/apikey','_blank')">Get Key</button>
+        </div>
+        <div class="button-group">
+            <button type="button" id="review-button">Review</button>
+            <button type="button" id="apply-button">Apply</button>
+        </div>
     </div>
 
-    <div id="review-output">
-    </div>
+    <div id="review-output"></div>
 
     <script type="module" src="./repo.js"></script>
     <script type="module" src="./reviewui.js"></script>
+    
     <footer>
         <div class="footer-links">
             <a href="https://icons8.com/" target="_blank" rel="noopener noreferrer" class="footer-link">Icons8</a>
