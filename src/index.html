@@ -27,46 +27,51 @@
         .app-header {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             padding: 6px 16px;
             background-color: #f8f9fa;
             border-bottom: 1px solid #dee2e6;
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .favicon-icon {
-            height: 20px;
-            margin-right: 8px;
+            height: 24px;
         }
 
         .title-container {
             display: flex;
-            flex-direction: column;
-            line-height: 1.2;
+            gap: 8px;
+            position: relative;
         }
 
-        .chinese-title {
-            font-size: 0.9rem;
+        .hanzi-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hanzi {
+            font-size: 1.1rem;
             font-weight: 500;
             color: #2c3e50;
         }
 
         .pinyin {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #7f8c8d;
-            letter-spacing: 0.5px;
-        }
-
-        /* Input Container */
-        #input-container {
-            display: flex;
-            justify-content: center;
-            padding: 8px;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
+            letter-spacing: 0.3px;
+            position: absolute;
+            bottom: -12px;
         }
 
         /* Form Elements */
         input, select, button {
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 4px;
             font-size: 13px;
             transition: all 0.2s ease;
@@ -76,6 +81,7 @@
             border: 1px solid #ced4da;
             background-color: #ffffff;
             color: #495057;
+            width: 300px;
         }
 
         button {
@@ -163,13 +169,15 @@
         .footer-links {
             display: flex;
             justify-content: center;
-            gap: 24px;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
         .footer-link {
             color: #7f8c8d;
             text-decoration: none;
             font-size: 11px;
+            white-space: nowrap;
         }
 
         .footer-link:hover {
@@ -187,16 +195,29 @@
 
 <body>
     <div class="app-header">
-        <img src="./favicon.png" alt="Code Review" class="favicon-icon">
-        <div class="title-container">
-            <span class="chinese-title">代碼審查</span>
-            <span class="pinyin">Dàimǎ Shěnchá</span>
+        <div class="header-left">
+            <img src="./favicon.png" alt="Code Review" class="favicon-icon">
+            <div class="title-container">
+                <div class="hanzi-group">
+                    <span class="hanzi">代</span>
+                    <span class="pinyin">Dài</span>
+                </div>
+                <div class="hanzi-group">
+                    <span class="hanzi">碼</span>
+                    <span class="pinyin">mǎ</span>
+                </div>
+                <div class="hanzi-group">
+                    <span class="hanzi">審</span>
+                    <span class="pinyin">shěn</span>
+                </div>
+                <div class="hanzi-group">
+                    <span class="hanzi">查</span>
+                    <span class="pinyin">chá</span>
+                </div>
+            </div>
         </div>
-    </div>
-    
-    <div id="input-container">
         <div class="input-group">
-            <input type="text" id="repoUrl" placeholder="Enter GitHub Repo URL"
+            <input type="text" id="repoUrl" placeholder="GitHub Repo URL"
                 value="https://github.com/tailuge/codorebyu">
             <button onclick="fetchRepoTree()">Load Repo</button>
         </div>
@@ -229,6 +250,8 @@
     
     <footer>
         <div class="footer-links">
+            <a href="https://deepseek.com" target="_blank" rel="noopener noreferrer" class="footer-link">DeepSeek</a>
+            <a href="https://aistudio.google.com" target="_blank" rel="noopener noreferrer" class="footer-link">Google AI Studio</a>
             <a href="https://icons8.com/" target="_blank" rel="noopener noreferrer" class="footer-link">Icons8</a>
             <a href="https://github.com/tailuge/codorebyu" target="_blank" rel="noopener noreferrer"
                 class="footer-link">GitHub</a>
