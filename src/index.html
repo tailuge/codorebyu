@@ -70,14 +70,17 @@
         }
 
         /* Form Elements */
-        input, select, button {
+        input,
+        select,
+        button {
             padding: 6px 10px;
             border-radius: 4px;
             font-size: 13px;
             transition: all 0.2s ease;
         }
 
-        input, select {
+        input,
+        select {
             border: 1px solid #ced4da;
             background-color: #ffffff;
             color: #495057;
@@ -189,6 +192,83 @@
             opacity: 0.5;
             pointer-events: none;
         }
+
+        .children {
+            margin-left: 20px;
+            padding-left: 12px;
+            border-left: 1px solid #eee;
+            display: none;
+            /* Start hidden */
+        }
+
+        .tree-node {
+            display: block;
+            /* Change from flex to block */
+            padding: 4px 0;
+            cursor: pointer;
+        }
+
+        .label-container {
+            display: flex;
+            align-items: center;
+            padding: 2px 0;
+        }
+
+        .tree-node:hover {
+            background-color: #f5f5f5;
+        }
+
+        .tree-node.selected {
+            background-color: #e0e0e0;
+        }
+
+        .tree-icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            flex-shrink: 0;
+            color: #6e6e6e;
+        }
+
+        .tree-icon svg[fill="currentColor"] {
+            color: inherit;
+        }
+
+        .tree-label {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 13px;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .directory {
+            font-weight: 600;
+            color: #1a73e8;
+        }
+
+        .dotfile {
+            color: #666;
+            opacity: 0.9;
+        }
+
+        .children {
+            margin-left: 20px;
+            border-left: 1px solid #eee;
+            padding-left: 12px;
+        }
+
+        .loading {
+            padding: 12px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .tree-chevron {
+            margin-right: 4px;
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
     </style>
     <title>GitHub Repo Viewer</title>
 </head>
@@ -217,8 +297,7 @@
             </div>
         </div>
         <div class="input-group">
-            <input type="text" id="repoUrl" placeholder="GitHub Repo URL"
-                value="https://github.com/tailuge/codorebyu">
+            <input type="text" id="repoUrl" placeholder="GitHub Repo URL" value="https://github.com/tailuge/codorebyu">
             <button onclick="fetchRepoTree()">Load Repo</button>
         </div>
     </div>
@@ -247,11 +326,12 @@
 
     <script type="module" src="./repo.js"></script>
     <script type="module" src="./reviewui.js"></script>
-    
+
     <footer>
         <div class="footer-links">
             <a href="https://deepseek.com" target="_blank" rel="noopener noreferrer" class="footer-link">DeepSeek</a>
-            <a href="https://aistudio.google.com" target="_blank" rel="noopener noreferrer" class="footer-link">Google AI Studio</a>
+            <a href="https://aistudio.google.com" target="_blank" rel="noopener noreferrer" class="footer-link">Google
+                AI Studio</a>
             <a href="https://icons8.com/" target="_blank" rel="noopener noreferrer" class="footer-link">Icons8</a>
             <a href="https://github.com/tailuge/codorebyu" target="_blank" rel="noopener noreferrer"
                 class="footer-link">GitHub</a>

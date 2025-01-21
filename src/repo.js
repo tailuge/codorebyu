@@ -1,5 +1,53 @@
 const DEFAULT_REPO = "https://github.com/tailuge/codorebyu"
 
+// Add these CSS classes to your stylesheet
+/*
+.tree-node {
+  padding: 4px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+}
+
+.tree-node:hover {
+  background-color: #f5f5f5;
+}
+
+.tree-node.selected {
+  background-color: #e0e0e0;
+}
+
+.tree-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.tree-label {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 13px;
+  color: #333;
+}
+
+.children {
+  margin-left: 20px;
+  border-left: 1px solid #eee;
+  padding-left: 12px;
+}
+
+.directory {
+  font-weight: 600;
+  color: #1a73e8;
+}
+
+.dotfile {
+  color: #666;
+  opacity: 0.8;
+}
+*/
+
 async function fetchRepoTree() {
   const repoUrl = document.getElementById("repoUrl").value || DEFAULT_REPO
   const apiUrl = repoUrl.replace(
@@ -9,7 +57,7 @@ async function fetchRepoTree() {
   const treeContainer = document.getElementById("treeContainer")
   const fileViewer = document.getElementById("fileViewer")
 
-  treeContainer.innerHTML = "Loading..."
+  treeContainer.innerHTML = '<div class="loading">Loading repository structure...</div>'
   fileViewer.value = ""
 
   try {
@@ -29,16 +77,34 @@ async function fetchRepoTree() {
 function buildTree(files) {
   const tree = {}
 
+  // Sort files before processing
+  files.sort((a, b) => {
+    const aIsDir = a.type === 'tree'
+    const bIsDir = b.type === 'tree'
+    const aIsDotfile = a.path.startsWith('.')
+    const bIsDotfile = b.path.startsWith('.')
+    
+    if (aIsDir && !bIsDir) return -1
+    if (!aIsDir && bIsDir) return 1
+    if (aIsDotfile && !bIsDotfile) return 1
+    if (!aIsDotfile && bIsDotfile) return -1
+    return a.path.localeCompare(b.path)
+  })
+
   files.forEach((file) => {
     const parts = file.path.split("/")
     let currentLevel = tree
 
     parts.forEach((part, index) => {
       if (!currentLevel[part]) {
-        currentLevel[part] =
-          index === parts.length - 1 ? file : { _isDir: true }
+        currentLevel[part] = {
+          ...file,
+          children: {},
+          name: part,
+          isDirectory: index < parts.length - 1 || file.type === 'tree'
+        }
       }
-      currentLevel = currentLevel[part]
+      currentLevel = currentLevel[part].children
     })
   })
 
@@ -46,56 +112,79 @@ function buildTree(files) {
 }
 
 function renderTree(tree, container, apiUrl) {
-  const ul = document.createElement("ul")
+  const ul = document.createElement("ul");
+  ul.style.listStyleType = "none";
+  ul.style.paddingLeft = "0";
+  ul.style.margin = "0";
 
-  for (const key in tree) {
-    if (key === "_isDir") continue // Skip internal marker
+  // Sort items: directories first, then files (dotfiles last)
+  const sortedNodes = Object.values(tree).sort((a, b) => {
+    if (a.isDirectory && !b.isDirectory) return -1;
+    if (!a.isDirectory && b.isDirectory) return 1;
+    if (a.name.startsWith('.') && !b.name.startsWith('.')) return 1;
+    if (!a.name.startsWith('.') && b.name.startsWith('.')) return -1;
+    return a.name.localeCompare(b.name);
+  });
 
-    // Skip if tree[key]?.path is undefined (metadata like mode, type, sha, etc.)
-    if (!tree[key]?.path) continue
+  sortedNodes.forEach(node => {
+    if (!node.path) return;
 
-    const li = document.createElement("li")
+    const li = document.createElement("li");
+    li.className = "tree-node";
 
-    // Container for the label (icon + text)
-    const labelContainer = document.createElement("div")
-    labelContainer.className = "label-container"
+    const labelContainer = document.createElement("div");
+    labelContainer.className = "label-container";
 
-    const icon = document.createElement("span")
-    icon.className = "icon"
-    icon.textContent = tree[key].type === "blob" ? "📄" : "📁"
+    // Chevron for directories
+    const chevron = document.createElement("span");
+    chevron.className = "tree-chevron";
+    chevron.textContent = node.isDirectory ? "▸" : " ";
+    chevron.style.marginRight = "4px";
 
-    const label = document.createElement("span")
-    label.textContent = key
+    // File/folder icon
+    const icon = document.createElement("span");
+    icon.className = "tree-icon";
+    icon.textContent = node.isDirectory ? "📁" : "📄";
+    icon.style.marginRight = "4px";
 
-    labelContainer.appendChild(icon)
-    labelContainer.appendChild(label)
+    const label = document.createElement("span");
+    label.className = `tree-label ${node.isDirectory ? 'directory' : ''} ${node.name.startsWith('.') ? 'dotfile' : ''}`;
+    label.textContent = node.name;
 
-    li.appendChild(labelContainer)
+    labelContainer.appendChild(chevron);
+    labelContainer.appendChild(icon);
+    labelContainer.appendChild(label);
 
-    if (tree[key].type === "blob") {
-      label.addEventListener("click", () =>
-        fetchFileContent(apiUrl, tree[key].path)
-      )
-    } else {
-      label.addEventListener("click", function (event) {
-        event.stopPropagation()
-        if (li.children.length > 1) {
-          // Remove the children container if it exists
-          li.removeChild(li.lastChild)
-        } else {
-          // Create a container for children and render the subtree
-          const childrenContainer = document.createElement("div")
-          childrenContainer.className = "children"
-          renderTree(tree[key], childrenContainer, apiUrl)
-          li.appendChild(childrenContainer)
+    if (node.isDirectory) {
+      const childrenContainer = document.createElement("div");
+      childrenContainer.className = "children";
+      
+      labelContainer.addEventListener("click", function (event) {
+        event.stopPropagation();
+        const wasVisible = childrenContainer.style.display === "block";
+        childrenContainer.style.display = wasVisible ? "none" : "block";
+        chevron.textContent = wasVisible ? "▸" : "▾";
+        
+        if (!wasVisible && childrenContainer.children.length === 0) {
+          renderTree(node.children, childrenContainer, apiUrl);
         }
-      })
+      });
+
+      li.appendChild(labelContainer);
+      li.appendChild(childrenContainer);
+    } else {
+      labelContainer.addEventListener("click", function () {
+        document.querySelectorAll('.tree-node').forEach(n => n.classList.remove('selected'));
+        li.classList.add('selected');
+        fetchFileContent(apiUrl, node.path);
+      });
+      li.appendChild(labelContainer);
     }
 
-    ul.appendChild(li)
-  }
+    ul.appendChild(li);
+  });
 
-  container.appendChild(ul)
+  container.appendChild(ul);
 }
 
 async function fetchFileContent(apiUrl, filePath) {
