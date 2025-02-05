@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Applicant Evaluator</title>
+    <title>Applicant Evaluator (Gemini)</title>
     <style>
         body { font-family: sans-serif; }
-        #apiKeyInput, #applicantDataInput, #criteriaInput, #reportOutput {
+        #apiKeyInput, #reportOutput {
             margin-bottom: 10px;
             width: 80%;
             padding: 8px;
@@ -17,9 +17,17 @@
         button { padding: 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
         button:hover { background-color: #3e8e41; }
         .error { color: red; }
-        #criteriaInput, #applicantDataInput{
-          height:200px;
+        #inputContainer {
+            display: flex;
+            justify-content: space-between; /* Distributes space evenly */
+            width: 80%;
         }
+        #criteriaInput, #applicantDataInput {
+          width: 48%; /* Slightly less than half to account for margins */
+          height: 200px;
+          box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+
     </style>
 </head>
 <body>
@@ -34,11 +42,11 @@
     </div>
 
     <div id="evaluationSection" style="display: none;">
-      <h2>Criteria</h2>
-      <textarea id="criteriaInput" placeholder="Enter criteria JSON here"></textarea><br>
-
-        <h2>Applicant Data</h2>
-        <textarea id="applicantDataInput" placeholder="Enter applicant data JSON here"></textarea><br>
+        <h2>Criteria & Applicant Data</h2>
+        <div id="inputContainer">
+            <textarea id="criteriaInput" placeholder="Enter criteria JSON here"></textarea>
+            <textarea id="applicantDataInput" placeholder="Enter applicant data JSON here"></textarea>
+        </div><br>
 
         <button onclick="evaluateApplicant()">Evaluate Applicant</button>
 
@@ -51,6 +59,8 @@
       const apiKeyInput = document.getElementById('apiKeyInput');
       const apiKeyStatus = document.getElementById('apiKeyStatus');
       const evaluationSection = document.getElementById('evaluationSection');
+      const criteriaInput = document.getElementById('criteriaInput');
+      const applicantDataInput = document.getElementById('applicantDataInput');
 
 
       // Pre-populate criteria and applicant data if not already in localStorage
@@ -82,7 +92,7 @@
                     field: "experience",
                 },
             ];
-          localStorage.setItem('criteria', JSON.stringify(defaultCriteria));
+          localStorage.setItem('criteria', JSON.stringify(defaultCriteria, null, 2)); // Pretty print on save
       }
 
       if (!localStorage.getItem('applicantData')) {
@@ -94,7 +104,7 @@
                 education: "Master's Degree in Computer Science",
                 experience: "5 years of software development experience"
             };
-          localStorage.setItem('applicantData', JSON.stringify(defaultApplicantData));
+          localStorage.setItem('applicantData', JSON.stringify(defaultApplicantData, null, 2)); // Pretty print on save
       }
 
       function saveApiKey() {
@@ -113,8 +123,8 @@
       function checkApiKeyAndShowContent() {
         if (localStorage.getItem('geminiApiKey')) { //Simplified key check
               evaluationSection.style.display = 'block';
-              document.getElementById('criteriaInput').value = localStorage.getItem('criteria');
-              document.getElementById('applicantDataInput').value = localStorage.getItem('applicantData');
+              criteriaInput.value = localStorage.getItem('criteria');
+              applicantDataInput.value = localStorage.getItem('applicantData');
           } else {
               evaluationSection.style.display = 'none';
           }
@@ -192,35 +202,43 @@
 
 
       async function evaluateApplicant() {
-          const criteriaText = document.getElementById('criteriaInput').value;
-          const applicantDataText = document.getElementById('applicantDataInput').value;
-          const reportOutput = document.getElementById('reportOutput');
+            const criteriaText = document.getElementById('criteriaInput').value;
+            const applicantDataText = document.getElementById('applicantDataInput').value;
+            const reportOutput = document.getElementById('reportOutput');
 
-          // Store current inputs in localstorage
-          localStorage.setItem('criteria', criteriaText);
-          localStorage.setItem('applicantData', applicantDataText);
+            try {
+              // Parse and immediately pretty-print the JSON inputs
+              const criteriaList = JSON.parse(criteriaText);
+              const applicantData = JSON.parse(applicantDataText);
 
-          try {
-            const criteriaList = JSON.parse(criteriaText);
-            const applicantData = JSON.parse(applicantDataText);
-            let report = {};
+                //Pretty print back to textareas
+              criteriaInput.value = JSON.stringify(criteriaList, null, 2);
+              applicantDataInput.value = JSON.stringify(applicantData, null, 2);
 
-            for (const criteria of criteriaList) {
-                const result = await evaluateCriteria(criteria, applicantData, apiKey);  // Pass API key
-                report[criteria.field] = {
-                    title: criteria.title,
-                    detail: criteria.detail,
-                    evaluation: result.decision,
-                    justification: result.justification
-                };
+              // Store pretty-printed JSON in local storage
+              localStorage.setItem('criteria', criteriaInput.value);
+              localStorage.setItem('applicantData', applicantDataInput.value);
+
+
+
+              let report = {};
+
+              for (const criteria of criteriaList) {
+                  const result = await evaluateCriteria(criteria, applicantData, apiKey);  // Pass API key
+                  report[criteria.field] = {
+                      title: criteria.title,
+                      detail: criteria.detail,
+                      evaluation: result.decision,
+                      justification: result.justification
+                  };
+              }
+
+              reportOutput.textContent = JSON.stringify(report, null, 2);
+
+            } catch (error) {
+              reportOutput.textContent = `Error: ${error.message}.  Please check the JSON format of your criteria and applicant data.`;
             }
-
-            reportOutput.textContent = JSON.stringify(report, null, 2);
-
-          } catch (error) {
-            reportOutput.textContent = `Error: ${error.message}.  Please check the JSON format of your criteria and applicant data.`;
-          }
-      }
+        }
 
        // Check for API key on page load
       checkApiKeyAndShowContent();
