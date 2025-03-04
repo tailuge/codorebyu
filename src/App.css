@@ -96,6 +96,10 @@
   border-color: #6366f1;
 }
 
+.repo-input::placeholder { /* Placeholder color */
+  color: #a1a1aa;
+}
+
 .fetch-button {
   background: linear-gradient(to right, #4f46e5, #7c3aed);
   color: #fff;
@@ -104,8 +108,12 @@
   border: none;
   font-size: 1rem;
   cursor: pointer;
-  transition: opacity 0.2s;
-  white-space: nowrap; /* Prevent text wrapping */
+  transition: background 0.2s ease-in-out; /* Smoother hover */
+  white-space: nowrap;
+}
+
+.fetch-button:hover {
+  background: linear-gradient(to right, #6366f1, #9d4edd); /* Lighter gradient on hover */
 }
 
 .fetch-button:disabled {
@@ -120,7 +128,7 @@
 
 .file-tree-container {
   width: 30%;
-  min-width: 250px; /* Minimum width for file tree */
+  min-width: 250px;
 }
 
 .code-viewer-container {
@@ -145,14 +153,14 @@
 }
 
 .folder {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem; /* Reduced spacing */
 }
 
 .folder-header {
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
+  padding: 0.2rem 0.5rem; /* Reduced padding */
   border-radius: 0.375rem;
   transition: background-color 0.2s;
 }
@@ -184,7 +192,7 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
+  padding: 0.2rem 0.5rem; /* Reduced padding */
   border-radius: 0.375rem;
   transition: background-color 0.2s;
   margin-left: 1.5rem;
@@ -204,16 +212,21 @@
 }
 
 .review-button {
-  background: linear-gradient(to right, #16a34a, #22c55e);
+  background: linear-gradient(to right, #4f46e5, #7c3aed); /* Same as fetch button */
   color: #fff;
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   border: none;
   font-size: 0.875rem;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: background 0.2s ease-in-out; /* Smoother hover */
   white-space: nowrap;
 }
+
+.review-button:hover {
+  background: linear-gradient(to right, #6366f1, #9d4edd); /* Lighter gradient on hover */
+}
+
 .review-button:disabled {
     opacity: 0.7;
     cursor: not-allowed;
@@ -231,7 +244,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -292,7 +305,7 @@
   background-color: #27272a;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
   transform: translateX(100%);
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.2s ease-in-out; /* Smoother transition */
   z-index: 40;
 }
 
