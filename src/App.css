@@ -4,13 +4,15 @@
   flex-direction: column;
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
-  background-color: #18181b; /* Dark background */
+  /* Radial gradient background */
+  background: radial-gradient(ellipse at center, #22222c 0%, #18181b 100%);
   color: #fff;
 }
 
 /* Header Styles */
 .app-header {
-  background: linear-gradient(to right, #4f46e5, #7c3aed); /* Bolt.new like gradient */
+  /* Same gradient as buttons */
+  background: linear-gradient(to right, #4f46e5, #7c3aed);
   padding: 1rem 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: sticky;
@@ -59,10 +61,10 @@
   background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Use a more specific cog icon */
 .cog-icon {
   width: 1.5rem;
   height: 1.5rem;
-  animation: spin 3s linear infinite;
 }
 
 /* Main Content Styles */

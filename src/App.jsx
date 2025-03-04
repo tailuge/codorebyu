@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import axios from 'axios';
 import { ChatOpenAI } from '@langchain/openai';
-import { CogIcon, XMarkIcon, ChevronRightIcon, ChevronDownIcon, DocumentTextIcon, FolderIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ChevronRightIcon, ChevronDownIcon, DocumentTextIcon, FolderIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
@@ -298,7 +298,7 @@ function App() {
             onClick={() => setShowSettings(!showSettings)}
             className="settings-button"
           >
-            <CogIcon className="cog-icon" />
+            <Cog6ToothIcon className="cog-icon" />
           </button>
         </div>
       </header>
