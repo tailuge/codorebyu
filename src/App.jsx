@@ -29,11 +29,11 @@ const FileTree = ({ data, onFileSelect }) => {
       return (
         <div
           key={currentPath}
-          className="pl-6 py-1 flex items-center hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer transition duration-150 ease-in-out"
+          className="file-item"
           onClick={() => onFileSelect(node)}
         >
-          <DocumentTextIcon className="h-4 w-4 mr-2 text-gray-500" />
-          <span className="text-sm truncate">{node.name}</span>
+          <DocumentTextIcon className="icon" />
+          <span className="file-name">{node.name}</span>
         </div>
       );
     }
@@ -41,22 +41,22 @@ const FileTree = ({ data, onFileSelect }) => {
     const isExpanded = expandedFolders[currentPath] !== false; // Default to expanded
 
     return (
-      <div key={currentPath}>
+      <div key={currentPath} className="folder">
         <div
-          className="py-1 flex items-center hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer transition duration-150 ease-in-out"
+          className="folder-header"
           onClick={() => toggleFolder(currentPath)}
         >
           {isExpanded ? (
-            <ChevronDownIcon className="h-4 w-4 mr-1" />
+            <ChevronDownIcon className="icon" />
           ) : (
-            <ChevronRightIcon className="h-4 w-4 mr-1" />
+            <ChevronRightIcon className="icon" />
           )}
-          <FolderIcon className="h-4 w-4 mr-2 text-yellow-500" />
-          <span className="text-sm font-medium">{node.name}</span>
+          <FolderIcon className="icon folder-icon" />
+          <span className="folder-name">{node.name}</span>
         </div>
 
         {isExpanded && (
-          <div className="ml-4">
+          <div className="folder-content">
             {node.children && node.children.map(child => renderTree(child, currentPath))}
           </div>
         )}
@@ -65,9 +65,7 @@ const FileTree = ({ data, onFileSelect }) => {
   };
 
   return (
-    <div className="file-tree">
-      {data.children && data.children.map(child => renderTree(child))}
-    </div>
+    <div className="file-tree">{data.children && data.children.map(child => renderTree(child))}</div>
   );
 };
 
@@ -289,118 +287,109 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-4 shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-white">
-            <a href="https://github.com/tailuge/codorebyu" target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-2">
-              <FontAwesomeIcon icon={faGithub} className="h-6 w-6" />
-              Code Review App
-            </a>
-          </h1>
+    <div className="app">
+      <header className="app-header">
+        <div className="header-content">
+          <a href="https://github.com/tailuge/codorebyu" target="_blank" rel="noopener noreferrer" className="logo-link">
+            <FontAwesomeIcon icon={faGithub} className="github-icon" />
+            <span className="app-title">Code Review App</span>
+          </a>
           <button
             onClick={() => setShowSettings(!showSettings)}
-            className="p-2 rounded-full hover:bg-indigo-700 transition-colors"
+            className="settings-button"
           >
-            <CogIcon className="h-6 w-6 animate-spin-slow" />
+            <CogIcon className="cog-icon" />
           </button>
         </div>
       </header>
 
-      {/* Main content */}
-      <div className="container mx-auto flex-1 p-4 flex flex-col">
-        {/* Repository URL input */}
-        <div className="mb-4 flex gap-2">
+      <main className="main-content">
+        <div className="input-section">
           <input
             type="text"
             value={repoUrl}
             onChange={(e) => setRepoUrl(e.target.value)}
-            placeholder="Enter GitHub repository URL (e.g., https://github.com/owner/repo)"
-            className="flex-1 p-3 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter GitHub repository URL"
+            className="repo-input"
           />
           <button
             onClick={fetchRepoStructure}
             disabled={loading}
-            className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 disabled:opacity-50 transition duration-200 ease-in-out"
+            className="fetch-button"
           >
             {loading ? 'Loading...' : 'Fetch'}
           </button>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md dark:bg-red-900 dark:text-red-200">
+          <div className="error-message">
             {error}
           </div>
         )}
 
-        {/* Main content area */}
-        <div className="flex-1 flex gap-4 overflow-hidden">
-          {/* Folder tree */}
-          <div className="w-1/3 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 overflow-auto">
-            <h2 className="text-lg font-semibold mb-3 dark:text-white">Repository Structure</h2>
+        <div className="content-area">
+          <div className="file-tree-container">
+            <h2 className="file-tree-title">Repository Structure</h2>
             {folderStructure ? (
               <FileTree
                 data={folderStructure}
                 onFileSelect={handleFileSelect}
               />
             ) : (
-              <p className="text-gray-500 dark:text-gray-400">
-                Enter a GitHub repository URL and click "Fetch" to view the structure
+              <p className="empty-message">
+                Enter a GitHub repository URL and click "Fetch"
               </p>
             )}
           </div>
 
-          {/* Code viewer */}
-          <div className="w-2/3 bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden flex flex-col">
-            <div className="p-4 border-b dark:border-gray-700 flex justify-between items-center">
-              <h2 className="text-lg font-semibold dark:text-white">
+          <div className="code-viewer-container">
+            <div className="code-viewer-header">
+              <h2 className="code-viewer-title">
                 {selectedFile ? selectedFile.path : 'Code Viewer'}
               </h2>
               {selectedFile && (
                 <button
                   onClick={requestCodeReview}
                   disabled={loading || !apiKey}
-                  className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 disabled:opacity-50 transition duration-200 ease-in-out"
+                  className="review-button"
                 >
                   {loading ? 'Processing...' : 'Review Code'}
                 </button>
               )}
             </div>
-            <div className="flex-1 overflow-auto">
+            <div className="code-viewer">
               {selectedFile ? (
                 <SyntaxHighlighter
                   language={getFileExtension(selectedFile.name)}
                   style={vscDarkPlus}
                   showLineNumbers
-                  customStyle={{ margin: 0, minHeight: '100%' }}
                 >
                   {fileContent}
                 </SyntaxHighlighter>
               ) : (
-                <div className="p-4 text-gray-500 dark:text-gray-400">
-                  Select a file from the repository to view its content
+                <div className="empty-message">
+                  Select a file to view its content
                 </div>
               )}
             </div>
           </div>
         </div>
-      </div>
+      </main>
 
       {/* Code Review Modal */}
       {showReview && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
-            <div className="p-4 border-b dark:border-gray-700 flex justify-between items-center">
-              <h2 className="text-xl font-bold dark:text-white">Code Review</h2>
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-header">
+              <h2 className="modal-title">Code Review</h2>
               <button
                 onClick={() => setShowReview(false)}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="close-button"
               >
-                <XMarkIcon className="h-6 w-6" />
+                <XMarkIcon className="close-icon" />
               </button>
             </div>
-            <div className="p-6 overflow-auto flex-1">
+            <div className="modal-content">
               <ReactMarkdown
                 className="prose dark:prose-invert max-w-none"
                 remarkPlugins={[remarkGfm]}
@@ -413,48 +402,48 @@ function App() {
       )}
 
       {/* Settings Panel */}
-      <div className={`fixed inset-y-0 right-0 w-80 bg-white dark:bg-gray-800 shadow-xl transform ${showSettings ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out z-40`}>
-        <div className="p-4 border-b dark:border-gray-700 flex justify-between items-center">
-          <h2 className="text-xl font-bold dark:text-white">Settings</h2>
+      <div className={`settings-panel ${showSettings ? 'open' : ''}`}>
+        <div className="settings-header">
+          <h2 className="settings-title">Settings</h2>
           <button
             onClick={() => setShowSettings(false)}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="close-button"
           >
-            <XMarkIcon className="h-6 w-6" />
+            <XMarkIcon className="close-icon" />
           </button>
         </div>
-        <div className="p-4">
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <div className="settings-content">
+          <div className="setting-group">
+            <label className="setting-label">
               System Prompt
             </label>
             <textarea
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
-              className="w-full p-3 border rounded-md h-40 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter system prompt for the LLM"
+              className="setting-textarea"
+              placeholder="Enter system prompt"
             />
             <button
               onClick={saveSystemPrompt}
-              className="mt-3 bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 w-full transition duration-200 ease-in-out"
+              className="save-button"
             >
               Save Prompt
             </button>
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <div className="setting-group">
+            <label className="setting-label">
               API Key
             </label>
             <input
               type="password"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              className="w-full p-3 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="setting-input"
               placeholder="Enter your API key"
             />
             <button
               onClick={saveApiKey}
-              className="mt-3 bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 w-full transition duration-200 ease-in-out"
+              className="save-button"
             >
               Save API Key
             </button>
@@ -462,7 +451,7 @@ function App() {
               href="https://github.com/settings/tokens"
               target="_blank"
               rel="noopener noreferrer"
-              className="block mt-3 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400"
+              className="get-token-link"
             >
               Get GitHub token
             </a>
