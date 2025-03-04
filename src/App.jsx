@@ -6,8 +6,8 @@ import remarkGfm from 'remark-gfm';
 import axios from 'axios';
 import { ChatOpenAI } from '@langchain/openai';
 import { CogIcon, XMarkIcon, ChevronRightIcon, ChevronDownIcon, DocumentTextIcon, FolderIcon } from '@heroicons/react/24/outline';
-import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
-import { faGithub } from '@fontawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import './App.css';
 
